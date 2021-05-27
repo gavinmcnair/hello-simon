@@ -52,6 +52,7 @@ workflows:
     jobs:
       - validate
       - test
+      - release
       - build:
           filters:
             branches:
