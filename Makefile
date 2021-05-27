@@ -52,7 +52,7 @@ all: test hello-simon  ## Run test and hello-simon  (default)
 
 .PHONY: test
 test: fmt vet ## Run tests
-	$(GOCMD) test ./pkg/... -coverprofile cover.out
+	$(GOCMD) test . -coverprofile cover.out
 
 .PHONY: hello-simon
 hello-simon: fmt vet ## Build binaries
@@ -60,11 +60,11 @@ hello-simon: fmt vet ## Build binaries
 
 .PHONY: fmt
 fmt: ## Run go fmt against code
-	$(GOCMD) fmt ./pkg/...
+	$(GOCMD) fmt .
 
 .PHONY: vet
 vet: ## Run go vet against code
-	$(GOCMD) vet ./pkg/...
+	$(GOCMD) vet .
 
 .PHONY: run
 run: ## Run the app
