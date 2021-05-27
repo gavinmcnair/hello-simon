@@ -4,28 +4,50 @@ jobs:
 
   build:
     docker:
-      - image: docker:17.05.0-ce-git
+      - image: google/cloud-sdk
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run:
+          name: build docker image
+          command: make build
+
+  release:
+    docker:
+      - image: circleci/golang:1.15
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run:
+          name: login
+          command: make login
+
+  test:
+    docker:
+      - image: cimg/go:1.14
+    steps:
+      - checkout
+      - run:
+          name: test
+          command: make test
+
+  validate:
+    docker:
+      - image: securego/gosec:v2.3.0
+    steps:
+      - checkout
+      - run:
+          name: gosec
+          command: gosec ./...
 
 workflows:
   version: 2
   flow:
     jobs:
-    build:
-      steps:
-        - checkout
-        - setup_remote_docker
-        - run:
-            name: install dependencies
-            command: apk add --update alpine-sdk
-        - run:
-            name: build docker image
-            command: make docker-build
-        - run:
-            name: login to docker.io
-            command: make docker-login
-        - run:
-            name: push image to docker.io
-            command: make docker-push
-        - run:
-            name: log out of docker.io
-            command: make docker-logout
+      - validate
+      - test
+      - build:
+          filters:
+            branches:
+              ignore:
+                - main
