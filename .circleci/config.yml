@@ -19,8 +19,14 @@ jobs:
       - checkout
       - setup_remote_docker
       - run:
-          name: login
+          name: login to docker.io
           command: make login
+      - run:
+          name: push image to docker.io
+          command: make push
+      - run:
+          name: log out of docker.io
+          command: make logout
 
   test:
     docker:
